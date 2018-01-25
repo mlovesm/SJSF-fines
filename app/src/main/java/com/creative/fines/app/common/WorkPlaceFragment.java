@@ -1,15 +1,20 @@
 package com.creative.fines.app.common;
 
+import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +30,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 import butterknife.Bind;
@@ -40,44 +47,27 @@ public class WorkPlaceFragment extends Fragment {
     @Bind(R.id.listView1) ListView listView;
     @Bind(R.id.top_title) TextView textTitle;
 
-    private boolean lastItemVisibleFlag = false;        //화면에 리스트의 마지막 아이템이 보여지는지 체크
-    private int startRow=1;
+    @Bind(R.id.textButton1) TextView tv_button1;
+    @Bind(R.id.textButton2) TextView tv_button2;
+
+    private boolean isSdate=false;
 
     private AQuery aq = new AQuery(getActivity());
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.basic_list, container, false);
+        View view = inflater.inflate(R.layout.work_place_list, container, false);
         ButterKnife.bind(this, view);
 
         textTitle.setText(getArguments().getString("title"));
         view.findViewById(R.id.top_write).setVisibility(View.VISIBLE);
 
+        tv_button1.setText(UtilClass.getCurrentDate(1));
+        tv_button2.setText(UtilClass.getCurrentDate(1));
+
         async_progress_dialog("getBoardInfo");
 
         listView.setOnItemClickListener(new ListViewItemClickListener());
-//        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
-//            @Override
-//            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-//                //현재 화면에 보이는 첫번째 리스트 아이템의 번호(firstVisibleItem)
-//                //+ 현재 화면에 보이는 리스트 아이템의 갯수(visibleItemCount)가 리스트 전체의 갯수(totalItemCount) -1 보다 크거나 같을때
-//                lastItemVisibleFlag = (totalItemCount > 0) && (firstVisibleItem + visibleItemCount >= totalItemCount);
-//            }
-//            @Override
-//            public void onScrollStateChanged(AbsListView view, int scrollState) {
-//                //OnScrollListener.SCROLL_STATE_IDLE은 스크롤이 이동하다가 멈추었을때 발생되는 스크롤 상태입니다.
-//                //즉 스크롤이 바닦에 닿아 멈춘 상태에 처리를 하겠다는 뜻
-//                if(scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && lastItemVisibleFlag) {
-//                    //TODO 화면이 바닦에 닿을때 처리
-//                    startRow++;
-//                    UtilClass.logD(TAG,"바닥임, startRow="+startRow);
-//                    async_progress_dialog("addBoardInfo");
-//                }else{
-//
-//                }
-//            }
-//
-//        });
 
         return view;
     }//onCreateView
@@ -86,15 +76,15 @@ public class WorkPlaceFragment extends Fragment {
         ProgressDialog dialog = ProgressDialog.show(getActivity(), "", "Loading...", true, false);
         dialog.setInverseBackgroundForced(false);
 
-        aq.progress(dialog).ajax(url, JSONObject.class, this, callback);
+        aq.progress(dialog).ajax(url+"/"+tv_button1.getText()+"/"+tv_button2.getText(), JSONObject.class, this, callback);
     }
 
     public void getBoardInfo(String url, JSONObject object, AjaxStatus status) throws JSONException {
+        arrayList = new ArrayList<>();
+        arrayList.clear();
 
         if(!object.get("count").equals(0)) {
             try {
-                arrayList = new ArrayList<>();
-                arrayList.clear();
                 for(int i=0; i<object.getJSONArray("datas").length();i++){
                     HashMap<String,Object> hashMap = new HashMap<>();
                     hashMap.put("key",object.getJSONArray("datas").getJSONObject(i).get("work_key").toString());
@@ -105,8 +95,6 @@ public class WorkPlaceFragment extends Fragment {
                     arrayList.add(hashMap);
                 }
 
-                mAdapter = new BoardAdapter(getActivity(), arrayList, "WorkPlace");
-                listView.setAdapter(mAdapter);
             } catch ( Exception e ) {
                 e.printStackTrace();
                 Toast.makeText(getActivity(), "에러코드 Work 1", Toast.LENGTH_SHORT).show();
@@ -115,31 +103,8 @@ public class WorkPlaceFragment extends Fragment {
             Log.d(TAG,"Data is Null");
             Toast.makeText(getActivity(), "데이터가 없습니다.", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    public void addBoardInfo(String url, JSONObject object, AjaxStatus status) throws JSONException {
-//        Log.d(TAG,url+",콜백 상태");
-
-        if(!object.get("count").equals(0)) {
-            try {
-                for(int i=0; i<object.getJSONArray("datas").length();i++){
-                    HashMap<String,Object> hashMap = new HashMap<>();
-                    hashMap.put("key",object.getJSONArray("datas").getJSONObject(i).get("work_key").toString());
-                    hashMap.put("data1",object.getJSONArray("datas").getJSONObject(i).get("work_date").toString());
-                    hashMap.put("data2",object.getJSONArray("datas").getJSONObject(i).get("worker_nm").toString().trim());
-                    hashMap.put("data3",object.getJSONArray("datas").getJSONObject(i).get("work_loc").toString());
-                    hashMap.put("data4",object.getJSONArray("datas").getJSONObject(i).get("work_order").toString());
-                    arrayList.add(hashMap);
-                }
-                mAdapter.setArrayList(arrayList);
-                mAdapter.notifyDataSetChanged();
-            } catch ( Exception e ) {
-                Toast.makeText(getActivity(), "에러코드 Work 2", Toast.LENGTH_SHORT).show();
-            }
-        }else{
-            Toast.makeText(getActivity(), "마지막 데이터 입니다.", Toast.LENGTH_SHORT).show();
-            startRow--;
-        }
+        mAdapter = new BoardAdapter(getActivity(), arrayList, "WorkPlace");
+        listView.setAdapter(mAdapter);
     }
 
     @OnClick(R.id.top_home)
@@ -161,6 +126,53 @@ public class WorkPlaceFragment extends Fragment {
         fragmentTransaction.addToBackStack("작업개소현황작성");
         fragmentTransaction.commit();
     }
+
+    //날짜설정
+    @OnClick(R.id.textButton1)
+    public void getDateDialog() {
+        getDialog("SD");
+        isSdate=true;
+    }
+    @OnClick(R.id.textButton2)
+    public void getDateDialog2() {
+        getDialog("ED");
+        isSdate=false;
+    }
+
+    public void getDialog(String gubun) {
+        int year, month, day;
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day= calendar.get(Calendar.DAY_OF_MONTH);
+
+        if(gubun.equals("SD")){
+            DatePickerDialog dialog = new DatePickerDialog(getActivity(), date_listener, year, month, 1);
+            dialog.show();
+        }else{
+            DatePickerDialog dialog = new DatePickerDialog(getActivity(), date_listener, year, month, day);
+            dialog.show();
+        }
+
+    }
+
+    private DatePickerDialog.OnDateSetListener date_listener = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            String month= UtilClass.addZero(monthOfYear+1);
+            String day= UtilClass.addZero(dayOfMonth);
+            String date= year+"-"+month+"-"+day;
+
+            if(isSdate){
+                tv_button1.setText(date);
+            }else{
+                tv_button2.setText(date);
+            }
+            async_progress_dialog("getBoardInfo");
+
+        }
+    };
 
     //ListView의 item (상세)
     private class ListViewItemClickListener implements AdapterView.OnItemClickListener {

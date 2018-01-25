@@ -44,6 +44,9 @@ public class UtilClass {
             String _month= UtilClass.addZero(month+1);
             String _day= UtilClass.addZero(day);
             returnData= year+"-"+_month+"-"+_day;
+        }else if(gubun==2){
+            String _month= UtilClass.addZero(month+1);
+            returnData= year+"-"+_month+"-"+"01";
         }else{
             String _hour= UtilClass.addZero(hour);
             String _minute= UtilClass.addZero(minute);

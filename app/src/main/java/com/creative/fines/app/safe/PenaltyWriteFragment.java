@@ -124,7 +124,7 @@ public class PenaltyWriteFragment extends Fragment {
             view.findViewById(R.id.linear2).setVisibility(View.GONE);
             textTitle.setText("패널티카드 작성");
             tv_date.setText(UtilClass.getCurrentDate(1));
-            tv_time.setText(UtilClass.getCurrentDate(2));
+            tv_time.setText(UtilClass.getCurrentDate(3));
             tv_writerName.setText(MainFragment.loginName);
             getPenaltyScoreData();
         }else{
