@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <include android:id="@id/layout_top" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_alignParentTop="true" layout="@layout/inc_top" />
+    <LinearLayout android:orientation="horizontal" android:id="@+id/layout_bottom" android:layout_width="fill_parent" android:layout_height="50dp" android:baselineAligned="false" android:layout_alignParentBottom="true">
+        <LinearLayout android:background="#ff2c74ed" android:layout_width="0.0dip" android:layout_height="50.0dip" android:layout_weight="1.0">
+            <TextView android:textSize="22.0sp" android:textStyle="bold" android:textColor="#ffeeeeee" android:gravity="center" android:id="@+id/textView1" android:layout_width="fill_parent" android:layout_height="fill_parent" android:text="저장" />
+        </LinearLayout>
+        <LinearLayout android:background="@color/colorAccent" android:layout_width="0.0dip" android:layout_height="50.0dip" android:layout_weight="1.0">
+            <TextView android:textSize="22.0sp" android:textStyle="bold" android:textColor="#ffeeeeee" android:gravity="center" android:id="@id/textView2" android:layout_width="fill_parent" android:layout_height="fill_parent" android:text="이력" />
+        </LinearLayout>
+    </LinearLayout>
+    <FrameLayout android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_above="@id/layout_bottom" android:layout_below="@id/layout_top">
+        <WebView android:id="@id/webView1" android:layout_width="fill_parent" android:layout_height="fill_parent" />
+        <ProgressBar android:id="@id/progressBar1" android:visibility="visible" android:layout_width="fill_parent" android:layout_height="5.0dip" style="?android:attr/progressBarStyleHorizontal" />
+    </FrameLayout>
+</RelativeLayout>

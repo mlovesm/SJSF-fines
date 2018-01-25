@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/nav_common" android:icon="@drawable/ic_menu_notice" android:title="공통" />
+        <item android:id="@+id/nav_common1"  android:title="    공지사항" />
+        <item android:id="@+id/nav_common2"  android:title="    사람찾기" />
+        <item android:id="@+id/nav_common3"  android:title="    무재해현황판" />
+        <item android:id="@+id/nav_common4"  android:title="    작업실적조회" />
+        <item android:id="@+id/nav_common5"  android:title="    작업개소현황" />
+
+        <item android:id="@+id/nav_safe" android:icon="@drawable/ic_menu_safe" android:title="안전" />
+        <item android:id="@+id/nav_safe1"  android:title="    패널티카드" />
+        <item android:id="@+id/nav_safe2"  android:title="    동료사랑카드" />
+        <item android:id="@+id/nav_safe3"  android:title="    작업기준" />
+        <item android:id="@+id/nav_safe4"  android:title="    위험기계사용점검" />
+
+        <item android:id="@+id/nav_green" android:icon="@drawable/ic_menu_idea" android:title="혁신" />
+        <item android:id="@+id/nav_green1"  android:title="    QSS 활동계획조회" />
+        <item android:id="@+id/nav_green2"  android:title="    제안활동실적조회" />
+        <item android:id="@+id/nav_green3"  android:title="    아이디어낙서방" />
+
+        <item android:id="@+id/nav_mate" android:icon="@drawable/ic_menu_gear" android:title="장비" />
+        <item android:id="@+id/nav_mate1"  android:title="    장비점검" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item android:id="@+id/nav_log_out" android:icon="@drawable/ic_menu_default"
+                android:title="로그아웃" />
+        </menu>
+    </item>
+
+</menu>

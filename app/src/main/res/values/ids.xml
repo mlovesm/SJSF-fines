@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="cast_notification_id" />
+    <item type="id" name="auto_focus" />
+    <item type="id" name="decode" />
+    <item type="id" name="decode_failed" />
+    <item type="id" name="decode_succeeded" />
+    <item type="id" name="launch_product_query" />
+    <item type="id" name="quit" />
+    <item type="id" name="restart_preview" />
+    <item type="id" name="return_scan_result" />
+    <item type="id" name="search_book_contents_failed" />
+    <item type="id" name="search_book_contents_succeeded" />
+    <item type="id" name="webView1">false</item>
+    <item type="id" name="progressBar1">false</item>
+    <item type="id" name="layout_top">false</item>
+    <item type="id" name="listView1">false</item>
+    <item type="id" name="textView1">false</item>
+    <item type="id" name="textView2">false</item>
+    <item type="id" name="textView3">false</item>
+    <item type="id" name="textView4">false</item>
+    <item type="id" name="textView5">false</item>
+    <item type="id" name="linearLayout0">false</item>
+    <item type="id" name="linearLayout1">false</item>
+    <item type="id" name="linearLayout2">false</item>
+    <item type="id" name="editText1">false</item>
+    <item type="id" name="editText2">false</item>
+    <item type="id" name="button1">false</item>
+    <item type="id" name="preview_view">false</item>
+    <item type="id" name="viewfinder_view">false</item>
+    <item type="id" name="result_view">false</item>
+    <item type="id" name="barcode_image_view">false</item>
+    <item type="id" name="status_view">false</item>
+    <item type="id" name="imageView1">false</item>
+    <item type="id" name="top_line">false</item>
+    <item type="id" name="top_title">false</item>
+    <item type="id" name="top_home">false</item>
+    <item type="id" name="top_list">false</item>
+    <item type="id" name="top_save">false</item>
+    <item type="id" name="top_write">false</item>
+    <item type="id" name="top_push">false</item>
+    <item type="id" name="top_search">false</item>
+    <item type="id" name="login_company">false</item>
+    <item type="id" name="button3">false</item>
+    <item type="id" name="editText3">false</item>
+    <item type="id" name="editText4">false</item>
+    <item type="id" name="layout_bottom">false</item>
+    <item type="id" name="spinner1">false</item>
+    <item type="id" name="spinner2">false</item>
+    <item type="id" name="imageView2">false</item>
+    <item type="id" name="imageView9">false</item>
+    <item type="id" name="imageView3">false</item>
+    <item type="id" name="imageView4">false</item>
+    <item type="id" name="imageView5">false</item>
+    <item type="id" name="imageView6">false</item>
+    <item type="id" name="imageView7">false</item>
+    <item type="id" name="text1">false</item>
+    <item type="id" name="main_check_box">false</item>
+    <item type="id" name="radioGroup">false</item>
+    <item type="id" name="menu_settings">false</item>
+</resources>

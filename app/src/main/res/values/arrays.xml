@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="select_picture">
+        <item>카메라로 촬영하기</item>
+        <item>갤러리에서 가져오기</item>
+        <item>삭제</item>
+    </string-array>
+</resources>

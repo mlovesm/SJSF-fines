@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="store_picture_title">Save image</string>
+    <string name="store_picture_message">Allow Ad to store image in Picture gallery?</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
+    <string name="app_name">파인스</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="do_choice">선택하세요</string>
+    <string name="do_data_choice">항목을 선택하세요</string>
+    <string name="no_data">해당 데이터가 없습니다</string>
+    <string name="failed_data">데이터를 가져오는 실패했습니다</string>
+    <string name="choice_company">회사명 선택</string>
+    <string name="check_subun">사번을 확인하세요</string>
+    <string name="preparing">준비중입니다.</string>
+    <string name="input_password">비밀번호 입력</string>
+    <string name="do_input_password">비밀번호를 입력하세요</string>
+    <string name="cate_large">대분류</string>
+    <string name="cate_mid">중분류</string>
+    <string name="safe_mng">안전관리</string>
+    <string name="safe_mng_history">안전관리이력</string>
+    <string name="safe_mng_modify">안전관리수정</string>
+    <string name="mach_car">차종</string>
+    <string name="mach_number">장비번호</string>
+    <string name="mach_mng">점검관리</string>
+    <string name="mach_mng_history">정비이력</string>
+    <string name="left_check_mng">점검누락</string>
+    <string name="lack_mng">자재부족분</string>
+    <string name="mach_manual">장비메뉴얼</string>
+    <string name="work_tit1">MSDS</string>
+    <string name="work_tit2">작업표준서</string>
+
+    <string-array name="company_list">
+        <item>(주)파인스</item>
+    </string-array>
+
+    <string name="settings">Current Settings</string>
+    <string name="settings_regions">Regions</string>
+    <string name="settings_recoonly">RECO Only</string>
+    <string name="settings_discontinouos">Discontinuous Scan</string>
+    <string name="settings_backgroundtimeout">Background Ranging Timeout</string>
+    <string name="settings_result_true">True</string>
+    <string name="settings_result_false">False</string>
+
+    <string name="background_monitoring">Background Monitoring</string>
+    <string name="background_ranging">Background Ranging</string>
+
+    <string name="start_monitoring">Start Monitoring</string>
+    <string name="start_ranging">Start Ranging</string>
+
+    <!-- Navigation Drawer -->
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
+    <string name="column_prompt">선택</string>
+
+    <string-array name="user_list">
+        <item>이름</item>
+        <item>사번</item>
+    </string-array>
+
+    <string-array name="search_list">
+        <item>이름</item>
+        <item>사번</item>
+        <item>전화번호</item>
+        <item>전체</item>
+    </string-array>
+
+    <string-array name="manual_list">
+        <item>파일명</item>
+        <item>제목</item>
+    </string-array>
+</resources>

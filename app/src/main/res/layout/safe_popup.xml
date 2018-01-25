@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:background="@color/green_m"
+        android:text="안전관리"
+        />
+    <!-- 라인 -->
+    <LinearLayout
+        android:background="@color/gary"
+        android:layout_width="match_parent"
+        android:layout_height="1.0dip" />
+
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/border_bottom_l"
+        >
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:textSize="18.0sp"
+            android:textStyle="bold"
+            android:textColor="@color/font_333"
+            android:text="대분류"
+            android:layout_marginLeft="15dp" />
+        <Spinner
+            android:id="@+id/spinner1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minWidth="295dp"
+            android:spinnerMode="dialog" />
+    </LinearLayout>
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:background="@drawable/border_bottom_l"
+        >
+        <TextView android:textSize="18sp" android:textStyle="bold" android:textColor="@color/font_333" android:layout_width="80dp" android:layout_height="wrap_content"
+            android:text="중분류"
+            android:layout_marginLeft="15dp" />
+        <Spinner android:id="@+id/spinner2" android:layout_width="match_parent" android:layout_height="wrap_content" android:spinnerMode="dialog"
+            android:minWidth="295dp" />
+    </LinearLayout>
+
+    <!-- 버튼 -->
+    <LinearLayout android:orientation="horizontal" android:id="@+id/layout_bottom" android:layout_width="match_parent" android:layout_height="wrap_content" android:baselineAligned="false" android:layout_alignParentBottom="true">
+        <LinearLayout android:background="@color/gary_dark" android:layout_width="0.0dip" android:layout_height="50.0dip" android:layout_weight="1.0">
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="닫기"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@color/item_green"
+            android:layout_width="0.0dip"
+            android:layout_height="50.0dip"
+            android:layout_weight="1.0" >
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="이력"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout android:background="@color/blue" android:layout_width="0.0dip" android:layout_height="50.0dip" android:layout_weight="1.0">
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="작성"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

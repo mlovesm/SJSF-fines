@@ -1,0 +1,77 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+
+    signingConfigs {
+        config {
+            keyPassword 'mgs123'
+            storeFile file('C:/AndroidStudioProjects/AndPro2017.jks')
+            storePassword 'mgs123'
+            keyAlias 'App'
+        }
+    }
+
+    defaultConfig {
+        applicationId "com.creative.fines.app"
+        minSdkVersion 19
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0.6"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationVariants.all { variant ->
+                variant.outputs.each {
+                    output ->
+                        def file = output.outputFile
+                        output.outputFile = new File(file.parent,
+                                file.name.replace("app", "sjsf-fines_" + defaultConfig.versionName))
+                }
+            }
+            signingConfig signingConfigs.config
+        }
+    }
+    useLibrary 'org.apache.http.legacy'
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.googlecode.android-query:android-query:0.25.9'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'jp.wasabeef:glide-transformations:1.0.6@aar'
+
+    compile 'org.apache.httpcomponents:httpmime:4.3.6'
+    compile 'org.apache.httpcomponents:httpclient:4.3.6'
+    compile 'org.apache.httpcomponents:httpcore:4.3.3'
+
+    compile 'com.google.code.gson:gson:2.7'
+    compile 'com.squareup.retrofit2:retrofit:2.2.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+
+    compile 'com.google.firebase:firebase-messaging:9.6.1'
+    compile 'gun0912.ted:tedpermission:1.0.2'
+    compile 'com.squareup:otto:1.3.7'
+
+}
+apply plugin: 'com.google.gms.google-services'

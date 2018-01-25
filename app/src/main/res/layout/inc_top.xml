@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout android:background="@color/colorPrimary" android:layout_width="match_parent" android:layout_height="50dp">
+        <LinearLayout
+            android:id="@id/top_line"
+            android:background="@drawable/border_nav"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_alignParentBottom="true" />
+
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent" android:layout_above="@id/top_line" android:paddingLeft="8dp" android:paddingRight="8dp">
+            <TextView
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/font_navtitle"
+                android:gravity="center_vertical"
+                android:id="@id/top_title"
+                android:layout_toRightOf="@id/top_list"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:text="타이틀"/>
+            <ImageView
+                android:id="@id/top_home"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_top_home"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
+            <ImageView
+                android:id="@id/top_list"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_menu_black_24dp"
+                android:layout_centerVertical="true" />
+            <ImageView
+                android:id="@id/top_save"
+                android:visibility="gone"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_top_save"
+                android:layout_toLeftOf="@id/top_home"
+                android:layout_centerVertical="true" />
+            <ImageView
+                android:id="@id/top_write"
+                android:visibility="gone"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_top_write"
+                android:layout_toLeftOf="@id/top_save"
+                android:layout_centerVertical="true" />
+            <ImageView
+                android:id="@id/top_push"
+                android:visibility="gone"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_top_push"
+                android:layout_toLeftOf="@id/top_write"
+                android:layout_centerVertical="true" />
+            <ImageView
+                android:id="@id/top_search"
+                android:visibility="gone"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_top_search"
+                android:layout_toLeftOf="@id/top_push"
+                android:layout_centerVertical="true" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>

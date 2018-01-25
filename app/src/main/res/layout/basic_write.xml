@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <include
+        android:id="@id/layout_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/inc_top"
+        android:layout_alignParentTop="true"/>
+    <!--공지사항-->
+    <LinearLayout
+        android:id="@id/linearLayout1"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_top"
+        android:background="@color/white"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="10"
+            android:orientation="horizontal"
+            android:background="@drawable/border_bottom_l"
+            android:layout_marginTop="2dp"
+            >
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="36dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="#ff333333"
+                android:text="대상"
+                />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="7"
+                android:layout_height="36dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                >
+                <RadioGroup
+                    android:id="@+id/radioGroup"
+                    android:checkedButton="@+id/offer"
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="14dp"
+                    android:orientation="horizontal"
+                    android:gravity="left"
+                    >
+
+                    <RadioButton
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="전체"
+                        android:textColor="@color/font_333"
+                        android:textStyle="bold"
+                        android:id="@+id/radio1" />
+                    <RadioButton
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="부서별"
+                        android:textColor="@color/font_333"
+                        android:textStyle="bold"
+                        android:id="@+id/radio2" />
+                    <RadioButton
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="직책별"
+                        android:textColor="@color/font_333"
+                        android:textStyle="bold"
+                        android:id="@+id/radio3" />
+                </RadioGroup>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="10"
+            android:orientation="horizontal"
+            android:background="@drawable/border_bottom_l"
+            >
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="3"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:text="세부대상"
+                android:textColor="#ff333333"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:layout_width="0dp"
+                android:layout_weight="7"
+                android:layout_height="36dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="5dp"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:id="@+id/spinner1" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@id/editText1"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_marginBottom="1dp"
+            android:background="@drawable/border_bottom"
+            android:hint="제목"
+            android:inputType="textCapCharacters"
+            android:padding="5.0dip"
+            android:textColor="@color/black"
+            android:textColorHint="@color/font_333"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@id/editText2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="230dp"
+            android:gravity="top"
+            android:background="@color/gary_light"
+            android:padding="5.0dip"
+            android:hint="내용"
+            android:textColorHint="@color/font_333"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/border_top_bottom"
+            android:layout_marginTop="5dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:layout_marginTop="1dp"
+                android:text="파일첨부"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/font_333"
+                android:id="@+id/textView"
+                android:layout_weight="0.09
+                " />
+            <ImageView
+                android:id="@+id/imageButton1"
+                android:src="@drawable/ic_add"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                />
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="36dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="5dp"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:singleLine="true" />
+        </LinearLayout>
+
+        <!--작성자-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="10"
+            android:orientation="horizontal"
+            android:background="@drawable/border_bottom"
+            android:layout_marginTop="1dp" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="3.1"
+                android:layout_height="36dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:text="작성자"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/font_333" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="0dp"
+                android:layout_weight="6.9"
+                android:layout_height="36dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="5dp"
+                android:textSize="15sp"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+    </LinearLayout>
+    <!-- 버튼 -->
+    <LinearLayout android:orientation="horizontal" android:id="@+id/layout_bottom" android:layout_width="match_parent" android:layout_height="wrap_content" android:baselineAligned="false" android:layout_alignParentBottom="true">
+        <LinearLayout android:background="@color/orange_dark" android:layout_width="0.0dip" android:layout_height="50.0dip" android:layout_weight="1.0"
+            android:id="@+id/linear1">
+
+            <TextView android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/font_navtitle"
+                android:gravity="center"
+                android:id="@+id/textButton1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="PUSH" />
+        </LinearLayout>
+        <LinearLayout android:background="@color/blue" android:layout_width="0.0dip" android:layout_height="50.0dip" android:layout_weight="1.0"
+            android:id="@+id/linear2">
+            <TextView android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/font_navtitle"
+                android:gravity="center"
+                android:id="@+id/textButton2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="저장" />
+        </LinearLayout>
+        <LinearLayout android:background="@color/blueviolet" android:layout_width="0.0dip" android:layout_height="50.0dip" android:layout_weight="1.0"
+            android:id="@+id/linear3">
+
+            <TextView android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/font_navtitle"
+                android:gravity="center"
+                android:id="@+id/textButton3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="삭제" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
