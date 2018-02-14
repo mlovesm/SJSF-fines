@@ -1,10 +1,6 @@
 package com.creative.fines.app.menu;
 
 import android.Manifest;
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -12,10 +8,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,9 +21,7 @@ import android.widget.Toast;
 
 import com.creative.fines.app.R;
 import com.creative.fines.app.fragment.FragMenuActivity;
-import com.creative.fines.app.fragment.WebFragment;
 import com.creative.fines.app.gear.GearPopupActivity;
-import com.creative.fines.app.safe.PenaltyWriteFragment;
 import com.creative.fines.app.safe.SafePopupActivity;
 import com.creative.fines.app.util.BackPressCloseSystem;
 import com.creative.fines.app.util.SettingPreference;
@@ -291,6 +284,13 @@ public class MainFragment extends Fragment {
     public void getMenu7() {
         Intent intent = new Intent(getActivity(),GearPopupActivity.class);
         intent.putExtra("title", "장비점검");
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.imageView8)
+    public void getMenu8() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("https://gcop.posco.co.kr/"));
         startActivity(intent);
     }
 

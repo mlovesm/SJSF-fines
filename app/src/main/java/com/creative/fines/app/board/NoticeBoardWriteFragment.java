@@ -1,9 +1,9 @@
 package com.creative.fines.app.board;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -479,6 +480,7 @@ public class NoticeBoardWriteFragment extends Fragment {
 
         }
 
+        @SuppressLint("LongLogTag")
         @Override
         protected String doInBackground(Void... unsued) {
             try {

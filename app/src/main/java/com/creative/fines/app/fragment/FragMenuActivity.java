@@ -1,12 +1,13 @@
 package com.creative.fines.app.fragment;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.creative.fines.app.R;
 import com.creative.fines.app.board.NoticeBoardFragment;
+import com.creative.fines.app.common.MeritRatingFragment;
 import com.creative.fines.app.common.WorkPlaceFragment;
 import com.creative.fines.app.gear.GearMainFragment;
 import com.creative.fines.app.gear.GearPopupActivity;
@@ -126,11 +128,11 @@ public class FragMenuActivity extends AppCompatActivity implements NavigationVie
     }
 
     public void onMenuInfo(String title){
-        android.app.Fragment frag = null;
+        Fragment frag = null;
         Bundle bundle = new Bundle();
 
-        fm = getFragmentManager();
-        android.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fm = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
         if(title.equals("메인")){
             fragmentTransaction.replace(R.id.fragmentReplace, frag = new MainFragment());
             String mode= getIntent().getStringExtra("mode");
@@ -210,6 +212,9 @@ public class FragMenuActivity extends AppCompatActivity implements NavigationVie
             bundle.putString("selectGearKey",selectGearKey);
             bundle.putString("url", MainFragment.ipAddress+ MainFragment.contextPath+"/Gear/gearList.do?gear_cd="+selectGearKey);
 
+        }else if(title.equals("인사고과")){
+            fragmentTransaction.replace(R.id.fragmentReplace, frag = new MeritRatingFragment());
+
         }
         fragmentTransaction.addToBackStack(title);
 
@@ -221,9 +226,9 @@ public class FragMenuActivity extends AppCompatActivity implements NavigationVie
         fragmentTransaction.commit();
     }
 
-    public void onFragment(android.app.Fragment fragment, Bundle bundle, String title){
-        FragmentManager fm = getFragmentManager();
-        android.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
+    public void onFragment(Fragment fragment, Bundle bundle, String title){
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
 
         fragmentTransaction.replace(R.id.fragmentReplace, fragment);
         fragmentTransaction.addToBackStack(title);
@@ -295,6 +300,10 @@ public class FragMenuActivity extends AppCompatActivity implements NavigationVie
         } else if (id == R.id.nav_common5) {
             intent = new Intent(getApplicationContext(),FragMenuActivity.class);
             intent.putExtra("title", "작업개소현황");
+
+        } else if (id == R.id.nav_common6) {
+            intent = new Intent(getApplicationContext(),FragMenuActivity.class);
+            intent.putExtra("title", "인사고과");
 
         } else if (id == R.id.nav_safe1) {
             intent = new Intent(getApplicationContext(),FragMenuActivity.class);

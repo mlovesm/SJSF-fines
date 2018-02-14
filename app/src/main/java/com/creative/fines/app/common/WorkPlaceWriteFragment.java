@@ -3,12 +3,12 @@ package com.creative.fines.app.common;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -109,7 +109,7 @@ public class WorkPlaceWriteFragment extends Fragment {
             dataSabun= MainFragment.loginSabun;
             view.findViewById(R.id.linear2).setVisibility(View.GONE);
             textTitle.setText("작업개소현황 작성");
-            tv_date.setText(UtilClass.getCurrentDate(1));
+            tv_date.setText(UtilClass.getCurrentDate(1,"-"));
             tv_writerName.setText(MainFragment.loginName);
         }else{
             textTitle.setText("작업개소현황 수정");

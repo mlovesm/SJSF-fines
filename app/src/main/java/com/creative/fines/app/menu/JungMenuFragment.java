@@ -1,9 +1,10 @@
 package com.creative.fines.app.menu;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,9 +54,9 @@ public class JungMenuFragment extends Fragment {
         return view;
     }
 
-    public void onFragment(android.app.Fragment fragment, Bundle bundle, String title){
+    public void onFragment(Fragment fragment, Bundle bundle, String title){
         FragmentManager fm = getFragmentManager();
-        android.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
 
         fragmentTransaction.replace(R.id.fragmentReplace, fragment);
         fragmentTransaction.addToBackStack(title);

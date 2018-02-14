@@ -1,10 +1,11 @@
 package com.creative.fines.app.work;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -171,7 +172,7 @@ public class WorkStandardMainFragment extends Fragment {
             Bundle bundle = new Bundle();
 
             FragmentManager fm = getFragmentManager();
-            android.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
+            FragmentTransaction fragmentTransaction = fm.beginTransaction();
             fragmentTransaction.replace(R.id.fragmentReplace, frag = new WebFragment());
             bundle.putString("title","작업기준상세");
             String file_nm= boardArray.get(position).get("file_nm").toString();

@@ -1,20 +1,17 @@
 package com.creative.fines.app.common;
 
 import android.app.DatePickerDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,8 +59,8 @@ public class WorkPlaceFragment extends Fragment {
         textTitle.setText(getArguments().getString("title"));
         view.findViewById(R.id.top_write).setVisibility(View.VISIBLE);
 
-        tv_button1.setText(UtilClass.getCurrentDate(1));
-        tv_button2.setText(UtilClass.getCurrentDate(1));
+        tv_button1.setText(UtilClass.getCurrentDate(1,"-"));
+        tv_button2.setText(UtilClass.getCurrentDate(1,"-"));
 
         async_progress_dialog("getBoardInfo");
 
@@ -121,7 +118,7 @@ public class WorkPlaceFragment extends Fragment {
         frag.setArguments(bundle);
 
         FragmentManager fm = getFragmentManager();
-        android.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
         fragmentTransaction.replace(R.id.fragmentReplace, frag);
         fragmentTransaction.addToBackStack("작업개소현황작성");
         fragmentTransaction.commit();
@@ -182,7 +179,7 @@ public class WorkPlaceFragment extends Fragment {
             Bundle bundle = new Bundle();
 
             FragmentManager fm = getFragmentManager();
-            android.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
+            FragmentTransaction fragmentTransaction = fm.beginTransaction();
             fragmentTransaction.replace(R.id.fragmentReplace, frag = new WorkPlaceWriteFragment());
             bundle.putString("title","작업개소현황상세");
             String key= arrayList.get(position).get("key").toString();

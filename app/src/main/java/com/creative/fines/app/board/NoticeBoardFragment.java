@@ -1,9 +1,10 @@
 package com.creative.fines.app.board;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -107,7 +108,7 @@ public class NoticeBoardFragment extends Fragment {
         frag.setArguments(bundle);
 
         FragmentManager fm = getFragmentManager();
-        android.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
         fragmentTransaction.replace(R.id.fragmentReplace, frag);
         fragmentTransaction.addToBackStack("공지사항작성");
         fragmentTransaction.commit();
@@ -121,7 +122,7 @@ public class NoticeBoardFragment extends Fragment {
             Bundle bundle = new Bundle();
 
             FragmentManager fm = getFragmentManager();
-            android.app.FragmentTransaction fragmentTransaction = fm.beginTransaction();
+            FragmentTransaction fragmentTransaction = fm.beginTransaction();
             fragmentTransaction.replace(R.id.fragmentReplace, frag = new NoticeBoardWriteFragment());
             bundle.putString("title","공지사항상세");
             String key= arrayList.get(position).get("key").toString();

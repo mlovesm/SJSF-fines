@@ -7,6 +7,7 @@
         <item android:id="@+id/nav_common3"  android:title="    무재해현황판" />
         <item android:id="@+id/nav_common4"  android:title="    작업실적조회" />
         <item android:id="@+id/nav_common5"  android:title="    작업개소현황" />
+        <item android:id="@+id/nav_common6"  android:title="    인사고과" />
 
         <item android:id="@+id/nav_safe" android:icon="@drawable/ic_menu_safe" android:title="안전" />
         <item android:id="@+id/nav_safe1"  android:title="    패널티카드" />
