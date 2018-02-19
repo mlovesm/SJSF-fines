@@ -49,7 +49,7 @@ public class MeritRatingFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.merit_rating_list, container, false);
+        View view = inflater.inflate(R.layout.basic_date_list, container, false);
         ButterKnife.bind(this, view);
         service= RetrofitService.rest_api.create(RetrofitService.class);
 
@@ -89,12 +89,13 @@ public class MeritRatingFragment extends Fragment {
                             UtilClass.dataNullCheckZero(response.body().getList().get(i));
 
                             HashMap<String,String> hashMap = new HashMap<>();
-                            hashMap.put("key",response.body().getList().get(i).get("merit_key"));
+                            hashMap.put("idx",response.body().getList().get(i).get("merit_key"));
+                            hashMap.put("key1",response.body().getList().get(i).get("write_dt"));
+                            hashMap.put("key2",response.body().getList().get(i).get("target_empcd"));
                             hashMap.put("data1",response.body().getList().get(i).get("write_dt"));
                             hashMap.put("data2",response.body().getList().get(i).get("user_nm"));
                             hashMap.put("data3",response.body().getList().get(i).get("merit_note"));
-                            hashMap.put("data4",UtilClass.MillToDate(Long.parseLong(response.body().getList().get(i).get("input_dt"))));
-                            hashMap.put("data5",response.body().getList().get(i).get("user_nm"));
+
                             arrayList.add(hashMap);
                         }
 
@@ -197,8 +198,12 @@ public class MeritRatingFragment extends Fragment {
             FragmentTransaction fragmentTransaction = fm.beginTransaction();
             fragmentTransaction.replace(R.id.fragmentReplace, frag = new MeritRatingWriteFragment());
             bundle.putString("title",title+"상세");
-            String key= arrayList.get(position).get("key");
-            bundle.putString("idx", key);
+            String idx= arrayList.get(position).get("idx");
+            String key1= arrayList.get(position).get("key1");
+            String key2= arrayList.get(position).get("key2");
+            bundle.putString("idx", idx);
+            bundle.putString("key1", key1);
+            bundle.putString("key2", key2);
             bundle.putString("mode", "update");
 
             frag.setArguments(bundle);

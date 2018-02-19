@@ -17,13 +17,13 @@ import java.util.HashMap;
 public class BoardAdapter extends BaseAdapter{
 
 	private LayoutInflater inflater;
-	private ArrayList<HashMap<String,Object>> boardList;
+	private ArrayList<HashMap<String,String>> boardList;
 	private ViewHolder viewHolder;
 	private Context con;
 	private String name;
 
 
-	public BoardAdapter(Context con , ArrayList<HashMap<String,Object>> array, String name){
+	public BoardAdapter(Context con , ArrayList<HashMap<String,String>> array, String name){
 		inflater = LayoutInflater.from(con);
 		boardList = array;
 		this.con = con;
@@ -77,11 +77,11 @@ public class BoardAdapter extends BaseAdapter{
 	}
 
 	
-	public void setArrayList(ArrayList<HashMap<String,Object>> arrays){
+	public void setArrayList(ArrayList<HashMap<String,String>> arrays){
 		this.boardList = arrays;
 	}
 	
-	public ArrayList<HashMap<String,Object>> getArrayList(){
+	public ArrayList<HashMap<String,String>> getArrayList(){
 		return boardList;
 	}
 	

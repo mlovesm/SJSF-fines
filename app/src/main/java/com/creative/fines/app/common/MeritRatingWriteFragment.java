@@ -51,10 +51,11 @@ public class MeritRatingWriteFragment extends Fragment {
     private ProgressDialog pDlalog = null;
     private RetrofitService service;
 
-    private String url;
     private String mode="";
     private String idx="";
     private String dataSabun;
+    private String key1;
+    private String key2;
     private boolean userAuth= false;
     private boolean isFirstDate=false;
 
@@ -77,14 +78,11 @@ public class MeritRatingWriteFragment extends Fragment {
     private TextView btn_cancel;
     private String selectSabunKey="";
 
-    private AQuery aq;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.merit_rating_write, container, false);
         ButterKnife.bind(this, view);
         service= RetrofitService.rest_api.create(RetrofitService.class);
-        aq = new AQuery( getActivity() );
 
         mode= getArguments().getString("mode");
         view.findViewById(R.id.top_save).setVisibility(View.VISIBLE);
@@ -100,6 +98,8 @@ public class MeritRatingWriteFragment extends Fragment {
         }else{
             textTitle.setText("인사고과 수정");
             idx= getArguments().getString("idx");
+            key1= getArguments().getString("key1");
+            key2= getArguments().getString("key2");
             detailInfo();
         }
 
@@ -144,7 +144,7 @@ public class MeritRatingWriteFragment extends Fragment {
         final ProgressDialog pDlalog = new ProgressDialog(getActivity());
         UtilClass.showProcessingDialog(pDlalog);
 
-        Call<Datas> call = service.listData("Common","meritDetail", idx);
+        Call<Datas> call = service.listData("Common","meritRatingDetail", idx);
         call.enqueue(new Callback<Datas>() {
             @Override
             public void onResponse(Call<Datas> call, Response<Datas> response) {
@@ -153,13 +153,18 @@ public class MeritRatingWriteFragment extends Fragment {
                     UtilClass.logD(TAG, "isSuccessful="+response.body().toString());
                     String status= response.body().getStatus();
                     try {
-                        dataSabun= response.body().getList().get(0).get("writer_sabun");
+                        dataSabun= response.body().getList().get(0).get("write_empcd");
                         if(MainFragment.loginSabun.equals(dataSabun)){
                         }else{
                             et_memo.setFocusableInTouchMode(false);
+                            getActivity().findViewById(R.id.linear1).setVisibility(View.GONE);
+                            getActivity().findViewById(R.id.linear2).setVisibility(View.GONE);
                         }
-                        tvDate.setText(response.body().getList().get(0).get("plan_sdate"));
-                        et_memo.setText(response.body().getList().get(0).get("plan_content"));
+                        selectSabunKey= response.body().getList().get(0).get("target_empcd");
+                        tv_userName.setText(response.body().getList().get(0).get("user_nm"));
+                        tv_userSosok.setText(response.body().getList().get(0).get("user_sosok"));
+                        tvDate.setText(response.body().getList().get(0).get("write_dt"));
+                        et_memo.setText(response.body().getList().get(0).get("merit_note"));
                         tv_writerName.setText(response.body().getList().get(0).get("writer_nm"));
 
                     } catch ( Exception e ) {
@@ -182,45 +187,51 @@ public class MeritRatingWriteFragment extends Fragment {
 
     }
 
-    public void async_progress_dialog(String callback){
-        if(callback.equals("searchUserData")){
-            ProgressDialog dialog = ProgressDialog.show(getActivity(), "", "Loading...", true, true);
-            dialog.setInverseBackgroundForced(false);
+    public void searchUserData(){
+        Call<Datas> call = service.listData("Login","searchUserData", "gubun="+search_gubun, "param="+et_search.getText());
+        call.enqueue(new Callback<Datas>() {
+            @Override
+            public void onResponse(Call<Datas> call, Response<Datas> response) {
+                UtilClass.logD(TAG, "response="+response);
+                if (response.isSuccessful()) {
+                    UtilClass.logD(TAG, "isSuccessful="+response.body().toString());
+                    String status= response.body().getStatus();
+                    try {
+                        if(response.body().getCount()==0){
+                            Toast.makeText(getActivity(), "데이터가 없습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                        arrayList = new ArrayList<>();
+                        arrayList.clear();
+                        for(int i=0; i<response.body().getList().size();i++){
+                            UtilClass.dataNullCheckZero(response.body().getList().get(i));
 
-            url= MainFragment.ipAddress+MainFragment.contextPath+"/rest/Login/searchUserData/gubun="+search_gubun+"/param="+et_search.getText();
-            aq.progress(dialog).ajax(url, JSONObject.class, this, callback);
+                            HashMap<String,Object> hashMap = new HashMap<>();
+                            hashMap.put("data1",response.body().getList().get(i).get("user_no").trim());
+                            hashMap.put("data2",response.body().getList().get(i).get("user_nm").trim());
+                            hashMap.put("user_sosok",response.body().getList().get(i).get("user_sosok").trim());
 
-        }else{
+                            arrayList.add(hashMap);
+                        }
 
-        }
+                        mAdapter = new BaseAdapter(getActivity(), arrayList);
+                        listView.setAdapter(mAdapter);
 
-    }
-
-    //유저 조회 데이터
-    public void searchUserData(String url, JSONObject object, AjaxStatus status) {
-//        UtilClass.logD(TAG, "object= "+object);
-
-        if( object != null) {
-            try {
-                arrayList = new ArrayList<>();
-                arrayList.clear();
-                for(int i=0; i<object.getJSONArray("datas").length();i++){
-                    HashMap<String,Object> hashMap = new HashMap<>();
-                    hashMap.put("data1",object.getJSONArray("datas").getJSONObject(i).get("user_no").toString());
-                    hashMap.put("data2",object.getJSONArray("datas").getJSONObject(i).get("user_nm").toString().trim());
-                    hashMap.put("user_sosok",object.getJSONArray("datas").getJSONObject(i).get("user_sosok").toString().trim());
-                    arrayList.add(hashMap);
+                    } catch ( Exception e ) {
+                        e.printStackTrace();
+                        Toast.makeText(getActivity(), "에러코드 Merit 4", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(getActivity(), "response isFailed", Toast.LENGTH_SHORT).show();
                 }
-                mAdapter = new BaseAdapter(getActivity(), arrayList);
-                listView.setAdapter(mAdapter);
-            } catch ( Exception e ) {
-                Toast.makeText(getActivity(), "에러코드 UserSearch 1", Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
             }
-        }else{
-            UtilClass.logD(TAG,"Data is Null");
-            Toast.makeText(getActivity(), "데이터가 없습니다.", Toast.LENGTH_SHORT).show();
-        }
+
+            @Override
+            public void onFailure(Call<Datas> call, Throwable t) {
+                UtilClass.logD(TAG, "onFailure="+call.toString()+", "+t);
+                Toast.makeText(getActivity(), "onFailure Merit",Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     //다이얼로그
@@ -318,7 +329,7 @@ public class MeritRatingWriteFragment extends Fragment {
                     InputMethodManager imm= (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(et_search.getWindowToken(), 0);
 
-                    async_progress_dialog("searchUserData");
+                    searchUserData();
                     break;
 
                 case R.id.textButton1:
@@ -341,7 +352,7 @@ public class MeritRatingWriteFragment extends Fragment {
             }
 //            UtilClass.logD(TAG, "?="+arr);
             tv_userSosok.setText(arrayList.get(position).get("user_sosok").toString().trim());
-            selectSabunKey= arrayList.get(position).get("data1").toString();
+            selectSabunKey= arrayList.get(position).get("data1").toString().trim();
             tv_userName.setText(arrayList.get(position).get("data2").toString().trim());
             dismissDialog();
         }
@@ -454,7 +465,7 @@ public class MeritRatingWriteFragment extends Fragment {
         pDlalog = new ProgressDialog(getActivity());
         UtilClass.showProcessingDialog(pDlalog);
 
-        Call<Datas> call = service.deleteData("Common","monthlyDelete", idx);
+        Call<Datas> call = service.deleteData("Common","meritRatingDelete", key1, key2);
 
         call.enqueue(new Callback<Datas>() {
             @Override
@@ -472,33 +483,35 @@ public class MeritRatingWriteFragment extends Fragment {
             public void onFailure(Call<Datas> call, Throwable t) {
                 if(pDlalog!=null) pDlalog.dismiss();
                 UtilClass.logD(TAG, "onFailure="+call.toString()+", "+t);
-                Toast.makeText(getActivity(), "handleResponse Monthly",Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "handleResponse Merit",Toast.LENGTH_LONG).show();
             }
         });
     }
 
     //작성,수정
     public void postData() {
-        if (et_memo.equals("") || et_memo.length()==0) {
-            Toast.makeText(getActivity(), "빈칸을 채워주세요.",Toast.LENGTH_LONG).show();
+        if (tv_userName.equals("") || tv_userName.length()==0) {
+            Toast.makeText(getActivity(), "대상자를 선택하세요.",Toast.LENGTH_LONG).show();
             return;
         }
 
         Map<String, Object> map = new HashMap();
         map.put("writer_sabun", MainFragment.loginSabun);
         map.put("writer_name", MainFragment.loginName);
-        map.put("plan_sdate",tvDate.getText());
-        map.put("plan_content",et_memo.getText());
+        map.put("write_dt",tvDate.getText());
+        map.put("target_empcd",selectSabunKey);
+        map.put("merit_note",et_memo.getText());
 
         pDlalog = new ProgressDialog(getActivity());
         UtilClass.showProcessingDialog(pDlalog);
 
         Call<Datas> call= null;
         if(mode.equals("insert")){
-            call = service.insertData("Common","monthlyInsert", map);
+            call = service.insertData("Common","meritRatingWrite", map);
         }else{
-            call = service.updateData("Common","monthlyModify", map);
-            map.put("idx",idx);
+            call = service.updateData("Common","meritRatingModify", map);
+            map.put("key1",key1);
+            map.put("key2",key2);
         }
 
         call.enqueue(new Callback<Datas>() {
@@ -511,7 +524,7 @@ public class MeritRatingWriteFragment extends Fragment {
                         handleResponse(response);
                     } catch ( Exception e ) {
                         e.printStackTrace();
-                        Toast.makeText(getActivity(), "에러코드 Monthly 1", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "에러코드 Merit 1", Toast.LENGTH_SHORT).show();
                     }
                 }else{
                     Toast.makeText(getActivity(), "response isFailed", Toast.LENGTH_SHORT).show();
@@ -523,7 +536,7 @@ public class MeritRatingWriteFragment extends Fragment {
             public void onFailure(Call<Datas> call, Throwable t) {
                 if(pDlalog!=null) pDlalog.dismiss();
                 UtilClass.logD(TAG, "onFailure="+call.toString()+", "+t);
-                Toast.makeText(getActivity(), "onFailure Monthly",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "onFailure Merit",Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -535,6 +548,8 @@ public class MeritRatingWriteFragment extends Fragment {
             String status= response.body().getStatus();
             if(status.equals("success")){
                 getActivity().onBackPressed();
+            }else if(status.equals("check")){
+                Toast.makeText(getActivity(), "중복된 데이터가 존재 합니다.", Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(getActivity(), "실패하였습니다.", Toast.LENGTH_SHORT).show();
             }

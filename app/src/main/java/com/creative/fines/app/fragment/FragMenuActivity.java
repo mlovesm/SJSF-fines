@@ -93,9 +93,7 @@ public class FragMenuActivity extends AppCompatActivity implements NavigationVie
             UtilClass.logD(TAG, "count="+fragmentStackCount+", tag="+tag);
             if(tag.equals("메인")){
                 backPressCloseSystem.onBackPressed();
-            }else if(fragmentStackCount!=1&&(tag.equals("공지사항작성")||tag.equals("공지사항상세")||tag.equals("패널티카드작성")||tag.equals("동료사랑카드작성")
-                    ||tag.equals("패널티카드상세")||tag.equals("동료사랑카드상세")||tag.equals("작업개소현황작성")||tag.equals("작업개소현황상세")||tag.equals("작업기준상세")
-                    ||tag.equals("아이디어낙서방상세")||tag.equals("아이디어낙서방작성")||tag.equals("장비점검이력"))){
+            }else if(fragmentStackCount!=1&&(tag.equals(title+"작성")||tag.equals(title+"수정")||tag.equals(title+"상세")||tag.equals("장비점검이력"))){
                 super.onBackPressed();
             }else{
                 UtilClass.logD(TAG, "피니쉬");

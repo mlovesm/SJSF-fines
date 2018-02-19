@@ -35,7 +35,7 @@ public class NoticeBoardFragment extends Fragment {
     private static final String TAG = "NoticeBoardFragment";
     private String url = MainFragment.ipAddress+ MainFragment.contextPath+"/rest/Board/noticeBoardList";
 
-    private ArrayList<HashMap<String,Object>> arrayList;
+    private ArrayList<HashMap<String,String>> arrayList;
     private BoardAdapter mAdapter;
     @Bind(R.id.listView1) ListView listView;
     @Bind(R.id.top_title) TextView textTitle;
@@ -72,7 +72,7 @@ public class NoticeBoardFragment extends Fragment {
                 arrayList = new ArrayList<>();
                 arrayList.clear();
                 for(int i=0; i<object.getJSONArray("datas").length();i++){
-                    HashMap<String,Object> hashMap = new HashMap<>();
+                    HashMap<String,String> hashMap = new HashMap<>();
                     hashMap.put("key",object.getJSONArray("datas").getJSONObject(i).get("push_key").toString());
                     hashMap.put("data1",object.getJSONArray("datas").getJSONObject(i).get("push_title").toString());
                     hashMap.put("data2",object.getJSONArray("datas").getJSONObject(i).get("target_nm").toString().trim());

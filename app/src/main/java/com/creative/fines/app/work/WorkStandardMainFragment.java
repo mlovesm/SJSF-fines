@@ -43,7 +43,7 @@ public class WorkStandardMainFragment extends Fragment {
     private String url;
     private String manual_kind;
 
-    private ArrayList<HashMap<String,Object>> boardArray;
+    private ArrayList<HashMap<String,String>> boardArray;
     private BoardAdapter mAdapter;
     @Bind(R.id.listView1) ListView listView;
     @Bind(R.id.top_title) TextView textTitle;
@@ -115,7 +115,7 @@ public class WorkStandardMainFragment extends Fragment {
             try {
                 boardArray.clear();
                 for(int i=0; i<object.getJSONArray("datas").length();i++){
-                    HashMap<String,Object> hashMap = new HashMap<>();
+                    HashMap<String,String> hashMap = new HashMap<>();
                     hashMap.put("idx",object.getJSONArray("datas").getJSONObject(i).get("manual_key").toString());
                     hashMap.put("file_nm",object.getJSONArray("datas").getJSONObject(i).get("file_nm").toString());
                     hashMap.put("data1",object.getJSONArray("datas").getJSONObject(i).get("manual_title").toString());

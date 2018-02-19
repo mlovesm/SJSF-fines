@@ -39,7 +39,7 @@ public class WorkPlaceFragment extends Fragment {
     private static final String TAG = "WorkPlaceFragment";
     private String url = MainFragment.ipAddress+ MainFragment.contextPath+"/rest/Common/workPlaceList";
 
-    private ArrayList<HashMap<String,Object>> arrayList;
+    private ArrayList<HashMap<String,String>> arrayList;
     private BoardAdapter mAdapter;
     @Bind(R.id.listView1) ListView listView;
     @Bind(R.id.top_title) TextView textTitle;
@@ -83,7 +83,7 @@ public class WorkPlaceFragment extends Fragment {
         if(!object.get("count").equals(0)) {
             try {
                 for(int i=0; i<object.getJSONArray("datas").length();i++){
-                    HashMap<String,Object> hashMap = new HashMap<>();
+                    HashMap<String,String> hashMap = new HashMap<>();
                     hashMap.put("key",object.getJSONArray("datas").getJSONObject(i).get("work_key").toString());
                     hashMap.put("data1",object.getJSONArray("datas").getJSONObject(i).get("work_date").toString());
                     hashMap.put("data2",object.getJSONArray("datas").getJSONObject(i).get("worker_nm").toString().trim());

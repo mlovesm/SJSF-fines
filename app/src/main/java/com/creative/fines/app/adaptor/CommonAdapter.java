@@ -52,15 +52,14 @@ public class CommonAdapter extends BaseAdapter{
 		if(v == null){
 			viewHolder = new ViewHolder();
 
-			if(name.equals("WorkPlace")){
-				v = inflater.inflate(R.layout.basic_list_item2, parent,false);
+			if(name.equals("Merit")){
+				v = inflater.inflate(R.layout.basic_list_item3, parent,false);
 			}else{
 				v = inflater.inflate(R.layout.basic_list_item, parent,false);
 			}
 			viewHolder.board_data1 = (TextView)v.findViewById(R.id.textView1);
 			viewHolder.board_data2 = (TextView)v.findViewById(R.id.textView2);
 			viewHolder.board_data3 = (TextView)v.findViewById(R.id.textView3);
-			viewHolder.board_data4 = (TextView)v.findViewById(R.id.textView4);
 
 			v.setTag(viewHolder);
 
@@ -70,7 +69,6 @@ public class CommonAdapter extends BaseAdapter{
 		viewHolder.board_data1.setText(boardList.get(position).get("data1").toString());
 		viewHolder.board_data2.setText(boardList.get(position).get("data2").toString());
 		viewHolder.board_data3.setText(boardList.get(position).get("data3").toString());
-		viewHolder.board_data4.setText(boardList.get(position).get("data4").toString());
 
 		return v;
 	}
