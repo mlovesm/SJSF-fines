@@ -62,8 +62,7 @@
 
     <string-array name="search_list">
         <item>이름</item>
-        <item>사번</item>
-        <item>전화번호</item>
+        <item>부서</item>
         <item>전체</item>
     </string-array>
 

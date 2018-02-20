@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +15,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxStatus;
 import com.creative.fines.app.R;
 import com.creative.fines.app.adaptor.BoardAdapter;
 import com.creative.fines.app.menu.MainFragment;
+import com.creative.fines.app.retrofit.Datas;
+import com.creative.fines.app.retrofit.RetrofitService;
 import com.creative.fines.app.util.UtilClass;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,9 +30,13 @@ import java.util.HashMap;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class WorkPlaceFragment extends Fragment {
     private static final String TAG = "WorkPlaceFragment";
+    private RetrofitService service;
     private String url = MainFragment.ipAddress+ MainFragment.contextPath+"/rest/Common/workPlaceList";
 
     private ArrayList<HashMap<String,String>> arrayList;
@@ -49,12 +49,11 @@ public class WorkPlaceFragment extends Fragment {
 
     private boolean isSdate=false;
 
-    private AQuery aq = new AQuery(getActivity());
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.work_place_list, container, false);
         ButterKnife.bind(this, view);
+        service= RetrofitService.rest_api.create(RetrofitService.class);
 
         textTitle.setText(getArguments().getString("title"));
         view.findViewById(R.id.top_write).setVisibility(View.VISIBLE);
@@ -62,46 +61,63 @@ public class WorkPlaceFragment extends Fragment {
         tv_button1.setText(UtilClass.getCurrentDate(1,"-"));
         tv_button2.setText(UtilClass.getCurrentDate(1,"-"));
 
-        async_progress_dialog("getBoardInfo");
+        async_progress_dialog();
 
         listView.setOnItemClickListener(new ListViewItemClickListener());
 
         return view;
     }//onCreateView
 
-    public void async_progress_dialog(String callback){
-        ProgressDialog dialog = ProgressDialog.show(getActivity(), "", "Loading...", true, false);
-        dialog.setInverseBackgroundForced(false);
+    public void async_progress_dialog(){
+        final ProgressDialog pDlalog = new ProgressDialog(getActivity());
+        UtilClass.showProcessingDialog(pDlalog);
 
-        aq.progress(dialog).ajax(url+"/"+tv_button1.getText()+"/"+tv_button2.getText(), JSONObject.class, this, callback);
-    }
+        Call<Datas> call = service.listData("Common","workPlaceList",tv_button1.getText().toString(), tv_button2.getText().toString());
+        call.enqueue(new Callback<Datas>() {
+            @Override
+            public void onResponse(Call<Datas> call, Response<Datas> response) {
+                UtilClass.logD(TAG, "response="+response);
+                if (response.isSuccessful()) {
+//                    UtilClass.logD(TAG, "isSuccessful="+response.body().toString());
+                    String status= response.body().getStatus();
+                    try {
+                        if(response.body().getCount()==0){
+                            Toast.makeText(getActivity(), "데이터가 없습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                        arrayList = new ArrayList<>();
+                        arrayList.clear();
+                        for(int i=0; i<response.body().getList().size();i++){
+                            UtilClass.dataNullCheckZero(response.body().getList().get(i));
 
-    public void getBoardInfo(String url, JSONObject object, AjaxStatus status) throws JSONException {
-        arrayList = new ArrayList<>();
-        arrayList.clear();
+                            HashMap<String,String> hashMap = new HashMap<>();
+                            hashMap.put("key",response.body().getList().get(i).get("work_key"));
+                            hashMap.put("data1",response.body().getList().get(i).get("work_date"));
+                            hashMap.put("data2",response.body().getList().get(i).get("worker_nm"));
+                            hashMap.put("data3",response.body().getList().get(i).get("work_loc"));
+                            hashMap.put("data4",response.body().getList().get(i).get("work_order"));
 
-        if(!object.get("count").equals(0)) {
-            try {
-                for(int i=0; i<object.getJSONArray("datas").length();i++){
-                    HashMap<String,String> hashMap = new HashMap<>();
-                    hashMap.put("key",object.getJSONArray("datas").getJSONObject(i).get("work_key").toString());
-                    hashMap.put("data1",object.getJSONArray("datas").getJSONObject(i).get("work_date").toString());
-                    hashMap.put("data2",object.getJSONArray("datas").getJSONObject(i).get("worker_nm").toString().trim());
-                    hashMap.put("data3",object.getJSONArray("datas").getJSONObject(i).get("work_loc").toString());
-                    hashMap.put("data4",object.getJSONArray("datas").getJSONObject(i).get("work_order").toString());
-                    arrayList.add(hashMap);
+                            arrayList.add(hashMap);
+                        }
+
+                        mAdapter = new BoardAdapter(getActivity(), arrayList, "WorkPlace");
+                        listView.setAdapter(mAdapter);
+                    } catch ( Exception e ) {
+                        e.printStackTrace();
+                        Toast.makeText(getActivity(), "에러코드 Work 1", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(getActivity(), "response isFailed", Toast.LENGTH_SHORT).show();
                 }
-
-            } catch ( Exception e ) {
-                e.printStackTrace();
-                Toast.makeText(getActivity(), "에러코드 Work 1", Toast.LENGTH_SHORT).show();
+                if(pDlalog!=null) pDlalog.dismiss();
             }
-        }else{
-            Log.d(TAG,"Data is Null");
-            Toast.makeText(getActivity(), "데이터가 없습니다.", Toast.LENGTH_SHORT).show();
-        }
-        mAdapter = new BoardAdapter(getActivity(), arrayList, "WorkPlace");
-        listView.setAdapter(mAdapter);
+
+            @Override
+            public void onFailure(Call<Datas> call, Throwable t) {
+                if(pDlalog!=null) pDlalog.dismiss();
+                UtilClass.logD(TAG, "onFailure="+call.toString()+", "+t);
+                Toast.makeText(getActivity(), "onFailure Work",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @OnClick(R.id.top_home)
@@ -166,7 +182,7 @@ public class WorkPlaceFragment extends Fragment {
             }else{
                 tv_button2.setText(date);
             }
-            async_progress_dialog("getBoardInfo");
+            async_progress_dialog();
 
         }
     };

@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -30,6 +31,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.creative.fines.app.R;
 import com.creative.fines.app.adaptor.BaseAdapter;
 import com.creative.fines.app.menu.MainFragment;
+import com.creative.fines.app.menu.PeoplesCardDialogActivity;
 import com.creative.fines.app.util.UtilClass;
 
 import org.apache.http.HttpResponse;
@@ -77,6 +79,7 @@ public class WorkPlaceWriteFragment extends Fragment {
 
     @Bind(R.id.top_title) TextView textTitle;
     @Bind(R.id.textView1) TextView tv_date;
+    @Bind(R.id.textView5) TextView tv_time;
     @Bind(R.id.textView2) TextView tv_userName;
     @Bind(R.id.textView3) TextView tv_userSosok;
     @Bind(R.id.textView4) TextView tv_writerName;
@@ -110,6 +113,7 @@ public class WorkPlaceWriteFragment extends Fragment {
             view.findViewById(R.id.linear2).setVisibility(View.GONE);
             textTitle.setText("작업개소현황 작성");
             tv_date.setText(UtilClass.getCurrentDate(1,"-"));
+            tv_time.setText(UtilClass.getCurrentDate(3,"-"));
             tv_writerName.setText(MainFragment.loginName);
         }else{
             textTitle.setText("작업개소현황 수정");
@@ -120,6 +124,19 @@ public class WorkPlaceWriteFragment extends Fragment {
 
         return view;
     }//onCreateView
+
+    @OnClick(R.id.textView2)
+    public void peopleCards() {
+        String user_name = tv_userName.getText().toString();
+
+        if (user_name.equals("") || user_name.length()==0) {
+            Toast.makeText(getActivity(), "작업자를 선택 하세요.",Toast.LENGTH_LONG).show();
+            return;
+        }
+        Intent intent = new Intent(getActivity(), PeoplesCardDialogActivity.class);
+        intent.putExtra("sabun_no", selectSabunKey);
+        startActivity(intent);
+    }
 
     @OnClick(R.id.top_home)
     public void goHome() {
@@ -150,8 +167,10 @@ public class WorkPlaceWriteFragment extends Fragment {
                             }
                             selectSabunKey= object.getJSONArray("datas").getJSONObject(0).get("worker_id").toString();
                             tv_userName.setText(object.getJSONArray("datas").getJSONObject(0).get("worker_nm").toString().trim());
-                            tv_userSosok.setText(object.getJSONArray("datas").getJSONObject(0).get("worker_sosok").toString().trim());
+                            tv_userSosok.setText(object.getJSONArray("datas").getJSONObject(0).get("worker_sosok").toString().trim()
+                                    +" "+object.getJSONArray("datas").getJSONObject(0).get("work_ban").toString().trim());
                             tv_date.setText(object.getJSONArray("datas").getJSONObject(0).get("work_date").toString());
+                            tv_time.setText(object.getJSONArray("datas").getJSONObject(0).get("work_time").toString());
                             et_memo1.setText(object.getJSONArray("datas").getJSONObject(0).get("work_loc").toString());
                             et_memo2.setText(object.getJSONArray("datas").getJSONObject(0).get("work_order").toString());
                             tv_writerName.setText(object.getJSONArray("datas").getJSONObject(0).get("input_nm").toString());
@@ -186,6 +205,7 @@ public class WorkPlaceWriteFragment extends Fragment {
                     hashMap.put("data1",object.getJSONArray("datas").getJSONObject(i).get("user_no").toString());
                     hashMap.put("data2",object.getJSONArray("datas").getJSONObject(i).get("user_nm").toString().trim());
                     hashMap.put("user_sosok",object.getJSONArray("datas").getJSONObject(i).get("user_sosok").toString().trim());
+                    hashMap.put("work_ban",object.getJSONArray("datas").getJSONObject(i).get("work_ban").toString().trim());
                     arrayList.add(hashMap);
                 }
                 mAdapter = new BaseAdapter(getActivity(), arrayList);
@@ -317,9 +337,10 @@ public class WorkPlaceWriteFragment extends Fragment {
                 arr.add((String) entry.getValue());
             }
 //            UtilClass.logD(TAG, "?="+arr);
-             tv_userSosok.setText(arrayList.get(position).get("user_sosok").toString().trim());
+             tv_userSosok.setText(arrayList.get(position).get("user_sosok").toString().trim()
+                +" "+arrayList.get(position).get("work_ban").toString().trim());
             tv_userName.setText(arrayList.get(position).get("data2").toString().trim());
-            selectSabunKey= arrayList.get(position).get("data1").toString();
+            selectSabunKey= arrayList.get(position).get("data1").toString().trim();
             dismissDialog();
         }
     }

@@ -37,29 +37,40 @@
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="@color/font_333" />
+
             <TextView
                 android:id="@id/textView1"
                 android:layout_width="0dp"
-                android:layout_weight="4"
                 android:layout_height="36dp"
-                android:paddingLeft="3dp"
+                android:layout_weight="3"
                 android:gravity="center_vertical"
-                android:textSize="15sp"
-                android:textColor="@color/black"
+                android:paddingLeft="3dp"
                 android:textAlignment="center"
-                />
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@id/textView5"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1.5"
+                android:gravity="center_vertical"
+                android:paddingLeft="3dp"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
             <Button
                 android:id="@id/date_button"
                 android:layout_width="0dp"
-                android:layout_weight="3"
                 android:layout_height="30dp"
                 android:layout_gravity="center_vertical"
+                android:layout_weight="2.5"
                 android:background="@drawable/box_green"
                 android:text="날짜선택"
                 android:textColor="@color/font_333"
                 android:textSize="15sp"
-                android:textStyle="bold"
-                />
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
@@ -87,26 +98,25 @@
             <TextView
                 android:id="@id/textView2"
                 android:layout_width="0dp"
-                android:layout_weight="4"
                 android:layout_height="36dp"
-                android:paddingLeft="3dp"
+                android:layout_weight="4.5"
                 android:gravity="center_vertical"
-                android:textSize="15sp"
-                android:textColor="@color/black"
+                android:paddingLeft="3dp"
                 android:textAlignment="center"
-                />
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
             <Button
                 android:id="@id/button1"
                 android:layout_width="0dp"
-                android:layout_weight="3"
                 android:layout_height="30dp"
                 android:layout_gravity="center_vertical"
+                android:layout_weight="2.5"
                 android:background="@drawable/box_green"
                 android:text="조회"
                 android:textColor="@color/font_333"
                 android:textSize="15sp"
-                android:textStyle="bold"
-                />
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
@@ -116,15 +126,18 @@
             android:orientation="horizontal"
             android:background="@drawable/border_bottom_l"
             >
+
             <TextView
                 android:layout_width="0dp"
-                android:layout_weight="3"
                 android:layout_height="36dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="3"
+                android:gravity="center_vertical"
                 android:paddingLeft="10dp"
                 android:text="소속"
+                android:textColor="@color/font_333"
                 android:textSize="15sp"
-                android:textStyle="bold"
-                android:textColor="@color/font_333" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textView3"

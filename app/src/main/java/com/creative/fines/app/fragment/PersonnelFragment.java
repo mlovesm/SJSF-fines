@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,17 +23,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxStatus;
 import com.creative.fines.app.R;
 import com.creative.fines.app.adaptor.PersonnelAdapter;
-import com.creative.fines.app.menu.MainFragment;
+import com.creative.fines.app.retrofit.Datas;
+import com.creative.fines.app.retrofit.RetrofitService;
+import com.creative.fines.app.util.KeyValueArrayAdapter;
 import com.creative.fines.app.util.UtilClass;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,18 +38,24 @@ import java.util.HashMap;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PersonnelFragment extends Fragment {
     private static final String TAG = "PersonnelFragment";
-    private String url;
 
-    private ArrayList<HashMap<String, Object>> peopleListArray;
+    private ArrayList<HashMap<String, String>> peopleListArray;
     private PersonnelAdapter mAdapter;
     @Bind(R.id.listView1) ListView listView;
     @Bind(R.id.top_title) TextView textTitle;
 
     @Bind(R.id.search_top) LinearLayout layout;
     @Bind(R.id.search_spi) Spinner search_spi;
+    @Bind(R.id.spinner2) Spinner spinner2;
+    private String[] spn2KeyList;
+    private String[] spn2ValueList;
+    String selectSpn2Key="";
     @Bind(R.id.et_search) EditText et_search;
     String search_column;	//검색 컬럼
 
@@ -61,7 +63,6 @@ public class PersonnelFragment extends Fragment {
     private int startRow=1;
 
     private PermissionListener permissionlistener;
-    private AQuery aq = new AQuery(getActivity());
 
     @Override
     public void onStart() {
@@ -75,8 +76,6 @@ public class PersonnelFragment extends Fragment {
 
         textTitle.setText(getArguments().getString("title"));
         view.findViewById(R.id.top_search).setVisibility(View.VISIBLE);
-
-//        async_progress_dialog("getPersonnelList");
 
         listView.setOnItemClickListener(new ListViewItemClickListener());
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -94,7 +93,7 @@ public class PersonnelFragment extends Fragment {
                     //TODO 화면이 바닦에 닿을때 처리
                     startRow++;
                     UtilClass.logD(TAG,"바닥임, startRow="+startRow);
-                    async_progress_dialog("addPersonnelList");
+                    getPersonnelList("addPersonnelList");
                 }else{
 
                 }
@@ -116,15 +115,36 @@ public class PersonnelFragment extends Fragment {
                 startRow=1;
                 if(position==0){
                     search_column="user_nm";
+                    et_search.setVisibility(view.VISIBLE);
+                    spinner2.setVisibility(view.GONE);
                 }else if(position==1){
-                    search_column="user_no";
-                }else if(position==2){
-                    search_column="user_cell";
+                    search_column="dept_cd";
+                    et_search.setVisibility(view.GONE);
+                    spinner2.setVisibility(view.VISIBLE);
+                    getDepartData();
                 }else{
-                    search_column=null;
+                    search_column="all";
+                    et_search.setVisibility(view.VISIBLE);
+                    spinner2.setVisibility(view.GONE);
                     et_search.setEnabled(false);
-                    async_progress_dialog("getPersonnelList");
+
+                    getPersonnelList("getPersonnelList");
                 }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                KeyValueArrayAdapter adapter = (KeyValueArrayAdapter) parent.getAdapter();
+                selectSpn2Key= adapter.getEntryValue(position);
+                UtilClass.logD("LOG", "KEY : " + adapter.getEntryValue(position));
+                UtilClass.logD("LOG", "VALUE : " + adapter.getEntry(position));
+
+                getPersonnelList("getPersonnelList");
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -134,66 +154,146 @@ public class PersonnelFragment extends Fragment {
         return view;
     }
 
-    public void async_progress_dialog(String callback){
-        ProgressDialog dialog = ProgressDialog.show(getActivity(), "", "Loading...", true, false);
-        dialog.setInverseBackgroundForced(false);
+    public void getPersonnelList(final String gubun){
+        RetrofitService service = RetrofitService.rest_api.create(RetrofitService.class);
 
-        if(search_column!=null){
-            url= MainFragment.ipAddress+ MainFragment.contextPath+"/rest/Personnel/PersonnelList/startRow="+startRow+"/search="+search_column+"/keyword="+et_search.getText();
+        final ProgressDialog pDlalog = new ProgressDialog(getActivity());
+        UtilClass.showProcessingDialog(pDlalog);
+        String keyword;
+        if(search_column.equals("dept_cd")){
+            keyword= selectSpn2Key;
+        }else if(search_column.equals("all")){
+            keyword= "all";
         }else{
-            url= MainFragment.ipAddress+ MainFragment.contextPath+"/rest/Personnel/PersonnelList/startRow="+startRow;
+            keyword= et_search.getText().toString();
         }
-        aq.progress(dialog).ajax(url, JSONObject.class, this, callback);
+        Call<Datas> call = service.listData("Personnel","PersonnelList", "startRow="+startRow, "search="+search_column, "keyword="+keyword);
+        call.enqueue(new Callback<Datas>() {
+            @Override
+            public void onResponse(Call<Datas> call, Response<Datas> response) {
+                UtilClass.logD(TAG, "response="+response);
+                if (response.isSuccessful()) {
+                    UtilClass.logD(TAG, "isSuccessful="+response.body().toString());
+                    String status= response.body().getStatus();
+                    try {
+                        if(gubun.equals("getPersonnelList")){
+                            if(response.body().getCount()==0){
+                                Toast.makeText(getActivity(), "데이터가 없습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                            peopleListArray = new ArrayList<>();
+                            peopleListArray.clear();
+                            for(int i=0; i<response.body().getList().size();i++){
+                                HashMap<String,String> hashMap = new HashMap<>();
+                                hashMap.put("user_nm",response.body().getList().get(i).get("user_nm"));
+                                hashMap.put("user_pic",response.body().getList().get(i).get("user_pic"));
+                                hashMap.put("L1",response.body().getList().get(i).get("L1"));
+                                hashMap.put("L2",response.body().getList().get(i).get("L2"));
+                                hashMap.put("R1",response.body().getList().get(i).get("R1"));
+                                hashMap.put("R2",response.body().getList().get(i).get("R2"));
+                                hashMap.put("R3",response.body().getList().get(i).get("R3"));
+                                hashMap.put("R4",response.body().getList().get(i).get("R4"));
+                                hashMap.put("R5",response.body().getList().get(i).get("R5"));
+                                peopleListArray.add(hashMap);
+                            }
+
+                            mAdapter = new PersonnelAdapter(getActivity(), peopleListArray);
+                            listView.setAdapter(mAdapter);
+
+                        }else{
+                            for(int i=0; i<response.body().getList().size();i++){
+                                HashMap<String,String> hashMap = new HashMap<>();
+                                hashMap.put("user_nm",response.body().getList().get(i).get("user_nm"));
+                                hashMap.put("user_pic",response.body().getList().get(i).get("user_pic"));
+                                hashMap.put("L1",response.body().getList().get(i).get("L1"));
+                                hashMap.put("L2",response.body().getList().get(i).get("L2"));
+                                hashMap.put("R1",response.body().getList().get(i).get("R1"));
+                                hashMap.put("R2",response.body().getList().get(i).get("R2"));
+                                hashMap.put("R3",response.body().getList().get(i).get("R3"));
+                                hashMap.put("R4",response.body().getList().get(i).get("R4"));
+                                hashMap.put("R5",response.body().getList().get(i).get("R5"));
+                                peopleListArray.add(hashMap);
+                            }
+                            mAdapter.setArrayList(peopleListArray);
+                            mAdapter.notifyDataSetChanged();
+
+                            if(response.body().getList().size()==0){
+                                Toast.makeText(getActivity(), "마지막 데이터 입니다.", Toast.LENGTH_SHORT).show();
+                                startRow--;
+                            }
+                        }
+
+                    } catch ( Exception e ) {
+                        e.printStackTrace();
+                        Toast.makeText(getActivity(), "에러코드 Personnel 1", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(getActivity(), "response isFailed", Toast.LENGTH_SHORT).show();
+                }
+                if(pDlalog!=null) pDlalog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<Datas> call, Throwable t) {
+                if(pDlalog!=null) pDlalog.dismiss();
+                UtilClass.logD(TAG, "onFailure="+call.toString()+", "+t);
+                Toast.makeText(getActivity(), "onFailure Personnel",Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
-    public void getPersonnelList(String url, JSONObject object, AjaxStatus status) throws JSONException {
-        peopleListArray = new ArrayList<>();
-        if(!object.get("count").equals(0)) {
-            try {
-                peopleListArray.clear();
-                for(int i=0; i<object.getJSONArray("datas").length();i++){
-                    HashMap<String,Object> hashMap = new HashMap<>();
-                    hashMap.put("user_no",object.getJSONArray("datas").getJSONObject(i).get("user_no").toString().trim());
-                    hashMap.put("user_nm",object.getJSONArray("datas").getJSONObject(i).get("user_nm").toString().trim());
-                    hashMap.put("user_cell",object.getJSONArray("datas").getJSONObject(i).get("user_cell").toString());
-                    hashMap.put("user_pic",object.getJSONArray("datas").getJSONObject(i).get("user_pic").toString());
-                    hashMap.put("user_email",object.getJSONArray("datas").getJSONObject(i).get("user_email").toString());
-                    peopleListArray.add(hashMap);
-                }
-            } catch ( Exception e ) {
-                Toast.makeText(getActivity(), "에러코드 Personnel 1", Toast.LENGTH_SHORT).show();
-            }
-        }else{
-            Log.d(TAG,"Data is Null");
-            Toast.makeText(getActivity(), "데이터가 없습니다.", Toast.LENGTH_SHORT).show();
-        }
-        mAdapter = new PersonnelAdapter(getActivity() , peopleListArray);
-        listView.setAdapter(mAdapter);
-    }
+    public void getDepartData(){
+        RetrofitService service = RetrofitService.rest_api.create(RetrofitService.class);
 
-    public void addPersonnelList(String url, JSONObject object, AjaxStatus status) throws JSONException {
-//        Log.d(TAG,url+",콜백 상태");
+        final ProgressDialog pDlalog = new ProgressDialog(getActivity());
+        UtilClass.showProcessingDialog(pDlalog);
 
-        if(!object.get("count").equals(0)) {
-            try {
-                for(int i=0; i<object.getJSONArray("datas").length();i++){
-                    HashMap<String,Object> hashMap = new HashMap<>();
-                    hashMap.put("user_no",object.getJSONArray("datas").getJSONObject(i).get("user_no").toString().trim());
-                    hashMap.put("user_nm",object.getJSONArray("datas").getJSONObject(i).get("user_nm").toString().trim());
-                    hashMap.put("user_cell",object.getJSONArray("datas").getJSONObject(i).get("user_cell").toString());
-                    hashMap.put("user_pic",object.getJSONArray("datas").getJSONObject(i).get("user_pic").toString());
-                    hashMap.put("user_email",object.getJSONArray("datas").getJSONObject(i).get("user_email").toString());
-                    peopleListArray.add(hashMap);
+        Call<Datas> call = service.listData("Login","dept1DataList");
+        call.enqueue(new Callback<Datas>() {
+            @Override
+            public void onResponse(Call<Datas> call, Response<Datas> response) {
+                UtilClass.logD(TAG, "response="+response);
+                if (response.isSuccessful()) {
+                    UtilClass.logD(TAG, "isSuccessful="+response.body().toString());
+                    String status= response.body().getStatus();
+                    try {
+                        if(response.body().getCount()==0){
+                            Toast.makeText(getActivity(), "데이터가 없습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                        spn2KeyList= new String[response.body().getList().size()];
+                        spn2ValueList= new String[response.body().getList().size()];
+
+                        for(int i=0; i<response.body().getList().size();i++){
+                            spn2KeyList[i]= response.body().getList().get(i).get("C001");
+                            spn2ValueList[i]= response.body().getList().get(i).get("C002");
+                        }
+
+                        KeyValueArrayAdapter adapter = new KeyValueArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        adapter.setEntries(spn2ValueList);
+                        adapter.setEntryValues(spn2KeyList);
+
+                        spinner2.setPrompt("선택");
+                        spinner2.setAdapter(adapter);
+
+                    } catch ( Exception e ) {
+                        e.printStackTrace();
+                        Toast.makeText(getActivity(), "에러코드 Personnel 2", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(getActivity(), "response isFailed", Toast.LENGTH_SHORT).show();
                 }
-                mAdapter.setArrayList(peopleListArray);
-                mAdapter.notifyDataSetChanged();
-            } catch ( Exception e ) {
-                Toast.makeText(getActivity(), "에러코드 Personnel 2", Toast.LENGTH_SHORT).show();
+                if(pDlalog!=null) pDlalog.dismiss();
             }
-        }else{
-            Toast.makeText(getActivity(), "마지막 데이터 입니다.", Toast.LENGTH_SHORT).show();
-            startRow--;
-        }
+
+            @Override
+            public void onFailure(Call<Datas> call, Throwable t) {
+                if(pDlalog!=null) pDlalog.dismiss();
+                UtilClass.logD(TAG, "onFailure="+call.toString()+", "+t);
+                Toast.makeText(getActivity(), "onFailure Board",Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     @OnClick(R.id.top_search)
@@ -222,7 +322,7 @@ public class PersonnelFragment extends Fragment {
         if(et_search.getText().toString().length()==0){
             Toast.makeText(getActivity(), "검색어를 입력하세요.", Toast.LENGTH_SHORT).show();
         }else{
-            async_progress_dialog("getPersonnelList");
+            getPersonnelList("getPersonnelList");
         }
 
     }
@@ -231,7 +331,8 @@ public class PersonnelFragment extends Fragment {
     private class ListViewItemClickListener implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            alertDialog(peopleListArray.get(position).get("user_cell").toString());
+            alertDialog(peopleListArray.get(position).get("R3").toString());
+
         }
     }
 
@@ -252,7 +353,6 @@ public class PersonnelFragment extends Fragment {
                 permissionlistener = new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-                        Toast.makeText(getActivity(), "권한 허가", Toast.LENGTH_SHORT).show();
                         if(phone_num!=null||phone_num!=""){
                             Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phone_num));
                             startActivity(intent);

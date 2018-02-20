@@ -74,7 +74,7 @@ public class UtilClass {
 
     //밀리언타입 Date 변환
     public static String MillToDate(long mills) {
-        String pattern = "yyyy-MM-dd";
+        String pattern = "yyyy-MM-dd HH:mm";
         SimpleDateFormat formatter = new SimpleDateFormat(pattern);
         String date = (String) formatter.format(new Timestamp(mills));
 

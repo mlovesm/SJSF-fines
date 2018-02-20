@@ -65,6 +65,9 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="sensor">
         </activity>
+
+        <activity android:name="com.creative.fines.app.menu.PeoplesCardDialogActivity" android:theme="@style/Theme.AppCompat.Light.Dialog">
+        </activity>
     </application>
 
 </manifest>
