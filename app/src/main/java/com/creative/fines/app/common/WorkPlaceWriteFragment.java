@@ -404,6 +404,7 @@ public class WorkPlaceWriteFragment extends Fragment {
     public void postData() {
         String user_name = tv_userName.getText().toString();
         String work_date = tv_date.getText().toString();
+        String work_time = tv_time.getText().toString();
         String work_loc = et_memo1.getText().toString();
         String work_order = et_memo2.getText().toString();
 
@@ -423,6 +424,7 @@ public class WorkPlaceWriteFragment extends Fragment {
         wst.addNameValuePair("writer_name", MainFragment.loginName);
         wst.addNameValuePair("user_name",user_name);
         wst.addNameValuePair("work_date",work_date);
+        wst.addNameValuePair("work_time",work_time);
         wst.addNameValuePair("work_loc",work_loc);
         wst.addNameValuePair("work_order",work_order);
         wst.addNameValuePair("work_per",selectSabunKey);

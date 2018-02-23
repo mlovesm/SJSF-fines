@@ -2,15 +2,19 @@ package com.creative.fines.app.menu;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +26,7 @@ import android.widget.Toast;
 import com.creative.fines.app.R;
 import com.creative.fines.app.fragment.FragMenuActivity;
 import com.creative.fines.app.gear.GearPopupActivity;
+import com.creative.fines.app.retrofit.RetrofitService;
 import com.creative.fines.app.safe.SafePopupActivity;
 import com.creative.fines.app.util.BackPressCloseSystem;
 import com.creative.fines.app.util.SettingPreference;
@@ -56,17 +61,25 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainFragment extends Fragment {
 
     //    adb shell dumpsys activity activities | findstr "Run"
     private static final String TAG = "MainFragment";
+    private RetrofitService service;
 //    public static String ipAddress= "http://119.202.60.104:8585";
     public static String ipAddress= "http://192.168.0.22:9191";
     public static String contextPath= "/sjsf_pines";
 
     public static String UPLOAD_URL = MainFragment.ipAddress+ MainFragment.contextPath+"/rest/Common/fileUpload";
     public static String DOWNLOAD_URL = MainFragment.ipAddress+"/uploadFile/";
+
+    private String fileDir= Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator  + "Download" + File.separator;
+    private String fileNm;
 
     //FCM 관련
     private String INSERT_URL= MainFragment.ipAddress+ MainFragment.contextPath+"/rest/Board/fcmTokenData";
@@ -76,7 +89,6 @@ public class MainFragment extends Fragment {
     public static String pendingPath= "";
     public static String pendingPathKey= "";
 
-    private BackPressCloseSystem backPressCloseSystem;
     private PermissionListener permissionlistener;
 
     private SettingPreference pref;
@@ -90,7 +102,7 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main, container, false);
         ButterKnife.bind(this, view);
-//        backPressCloseSystem = new BackPressCloseSystem(getActivity());
+        service= RetrofitService.rest_api.create(RetrofitService.class);
         textTitle.setText("");
         view.findViewById(R.id.top_home).setVisibility(View.GONE);
 
@@ -99,6 +111,14 @@ public class MainFragment extends Fragment {
         loginSabun = pref.getValue("sabun_no","").trim();
         loginName = pref.getValue("user_nm","").trim();
         latestAppVer = pref.getValue("LATEST_APP_VER","");
+
+        String currentAppVer= getAppVersion(getActivity());
+        UtilClass.logD(TAG, "currentAppVer="+currentAppVer+", latestAppVer="+latestAppVer);
+        if(!currentAppVer.equals(latestAppVer)){
+            //최신버전이 아닐때
+            fileNm= "sjsf_fines_"+latestAppVer+"-debug.apk";
+            alertDialog();
+        }
 
 //        FirebaseMessaging.getInstance().subscribeToTopic("all");
 //        FirebaseMessaging.getInstance().unsubscribeFromTopic("all");
@@ -136,32 +156,6 @@ public class MainFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        String currentAppVer= getAppVersion(getActivity());
-        UtilClass.logD(TAG, "currentAppVer="+currentAppVer+", latestAppVer="+latestAppVer);
-
-        if(!currentAppVer.equals(latestAppVer)){
-            //최신버전이 아닐때
-//            Snackbar.make(getView(), "현재 앱의 버전보다 높은 최신 버전이 있습니다.", Snackbar.LENGTH_INDEFINITE).setAction("다운받기", new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    new Thread() {
-//                        public void run() {
-//                            download_WebLink();
-//                        }
-//                    }.start();
-//                }
-//            }).show();
-
-        }else{
-
-        }
-
-    }
-
     public static String getAppVersion(Context context) {
         // application version
         String versionName = "";
@@ -175,61 +169,99 @@ public class MainFragment extends Fragment {
         return versionName;
     }
 
-    public void download_WebLink() {
-        try {
-            Log.e("DOWNLOAD", "start");
-            URL url = new URL("http://59.11.9.94:9090/app/apkDown.do?appGubun=pines");
+    public void alertDialog(){
+        final android.app.AlertDialog.Builder alertDlg = new android.app.AlertDialog.Builder(getActivity());
+        alertDlg.setTitle("알림");
+        alertDlg.setMessage("현재 앱의 버전보다 높은 최신 버전이 있습니다.");
 
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setDoOutput(true);
-            urlConnection.connect();
-            Log.e("DOWNLOAD", "Connect");
-
-            File SDCardRoot = Environment.getExternalStorageDirectory();
-            File file = new File(SDCardRoot,"pines_"+latestAppVer+".apk");
-            FileOutputStream fileOutput = new FileOutputStream(file);
-            Log.e("DOWNLOAD", "fileoutput");
-
-            InputStream inputStream = urlConnection.getInputStream();
-            int totalSize = urlConnection.getContentLength();
-            int downloadedSize = 0;
-
-            byte[] buffer = new byte[1024];
-            int bufferLength = 0;
-            while ( (bufferLength = inputStream.read(buffer)) > 0 ) {
-                fileOutput.write(buffer, 0, bufferLength);
-                downloadedSize += bufferLength;
-                //mProgressBar.setProgress(downloadedSize);
-                Log.e("DOWNLOAD", "saving...");
+        // '예' 버튼이 클릭되면
+        alertDlg.setPositiveButton("지금 설치", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                installAPK();
             }
-            fileOutput.close();
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            Toast.makeText(getActivity(), "에러코드 Main MalURL", Toast.LENGTH_SHORT).show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(getActivity(), "에러코드 Main IO", Toast.LENGTH_SHORT).show();
-
-        }
-        Log.e("DOWNLOAD", "end");
-
-        Log.e("DOWNLOAD", "InstallAPK Method Called");
-        installAPK();
+        });
+        // '아니오' 버튼이 클릭되면
+        alertDlg.setNegativeButton("다음에 설치", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alertDlg.show();
     }
 
-    public void installAPK()
-    {
-        Log.e("InstallApk", "Start");
-        File apkFile = new File("/sdcard/"+"pines_"+latestAppVer+".apk");
+    //파일 다운로드
+    public void downloadFile(String fileUrl) {
+        final ProgressDialog pDlalog = new ProgressDialog(getActivity());
+        UtilClass.showProcessingDialog(pDlalog);
 
-        Uri apkUri = Uri.fromFile(apkFile);
+        Call<ResponseBody> call = service.downloadFile(fileUrl);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    UtilClass.logD(TAG, "isSuccessful="+response.body().toString());
+                    boolean writtenToDisk = UtilClass.writeResponseBodyToDisk(response.body(), fileDir, fileNm);
+                    UtilClass.logD(TAG, "file download was a success? " + writtenToDisk);
 
-        Intent webLinkIntent = new Intent(Intent.ACTION_VIEW);
-        webLinkIntent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
+                    if(writtenToDisk){
+                        installAPK();
+                    }else{
+                        Toast.makeText(getActivity(), "다운로드 실패", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    UtilClass.logD(TAG, "response isFailed="+response);
+                    Toast.makeText(getActivity(), "response isFailed", Toast.LENGTH_SHORT).show();
+                }
+                if(pDlalog!=null) pDlalog.dismiss();
+            }
 
-        startActivity(webLinkIntent);
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                if(pDlalog!=null) pDlalog.dismiss();
+                UtilClass.logD(TAG, "onFailure="+call.toString()+", "+t);
+                Toast.makeText(getActivity(), "onFailure downloadFile",Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
+    public void installAPK() {
+        UtilClass.logD("InstallApk", "Start");
+        File apkFile = new File(fileDir + fileNm);
+        if(apkFile.exists()) {
+            try {
+                Intent webLinkIntent = new Intent(Intent.ACTION_VIEW);
+                Uri uri = null;
+
+                // So you have to use Provider
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    uri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", apkFile);
+
+                    // Add in case of if We get Uri from fileProvider.
+                    webLinkIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    webLinkIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                }else{
+                    uri = Uri.fromFile(apkFile);
+                }
+
+                webLinkIntent.setDataAndType(uri, "application/vnd.android.package-archive");
+
+                startActivity(webLinkIntent);
+            } catch (ActivityNotFoundException ex){
+                ex.printStackTrace();
+                Toast.makeText(getActivity(), "설치에 실패 하였습니다.", Toast.LENGTH_SHORT).show();
+            }
+        }else{
+            Toast.makeText(getActivity(), "최신버전 파일을 다운로드 합니다.", Toast.LENGTH_SHORT).show();
+            try {
+                downloadFile("http://w-cms.co.kr:9090/app/apkDown.do?appGubun="+fileNm);
+            }catch (Exception e){
+
+            }
+        }
+
     }
 
 

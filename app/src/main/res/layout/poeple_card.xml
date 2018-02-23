@@ -257,6 +257,7 @@
             android:background="@drawable/border_bottom_l"
             android:focusable="false"
             android:focusableInTouchMode="false"
+            android:visibility="gone"
             android:orientation="horizontal">
 
             <TextView
@@ -300,7 +301,8 @@
             android:background="@color/colorPrimary"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_weight="1.0">
+            android:layout_weight="1.0"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/textButton1"

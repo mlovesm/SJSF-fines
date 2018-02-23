@@ -122,6 +122,14 @@ public class PersonnelFragment extends Fragment {
                     et_search.setVisibility(view.GONE);
                     spinner2.setVisibility(view.VISIBLE);
                     getDepartData();
+                }else if(position==2){
+                    search_column="work";
+                    et_search.setVisibility(view.VISIBLE);
+                    spinner2.setVisibility(view.GONE);
+                    et_search.setEnabled(false);
+
+                    getPersonnelList("getPersonnelList");
+
                 }else{
                     search_column="all";
                     et_search.setVisibility(view.VISIBLE);
@@ -162,6 +170,8 @@ public class PersonnelFragment extends Fragment {
         String keyword;
         if(search_column.equals("dept_cd")){
             keyword= selectSpn2Key;
+        }else if(search_column.equals("work")){
+            keyword= "work";
         }else if(search_column.equals("all")){
             keyword= "all";
         }else{

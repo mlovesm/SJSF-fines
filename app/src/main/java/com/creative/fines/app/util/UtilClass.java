@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -11,6 +12,11 @@ import com.creative.fines.app.BuildConfig;
 import com.creative.fines.app.fragment.FragMenuActivity;
 import com.creative.fines.app.menu.MainFragment;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 
 /**
@@ -144,6 +151,57 @@ public class UtilClass {
             if(entry.getValue()==null){
                 entry.setValue("");
             }
+        }
+    }
+
+    public static boolean writeResponseBodyToDisk(ResponseBody body, String fileDir, String fileNm) {
+        try {
+            // todo change the file location/name according to your needs
+            String externalState = Environment.getExternalStorageState();
+//            UtilClass.logD(TAG, "경로1="+Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator  + "Download" + File.separator  + fileNm);
+//            UtilClass.logD(TAG, "경로2="+getActivity().getExternalFilesDir(null).getAbsolutePath()+ File.separator + fileNm);
+            File createFile = new File(fileDir  + fileNm);
+
+            InputStream inputStream = null;
+            OutputStream outputStream = null;
+            try {
+                byte[] fileReader = new byte[4096];
+
+                long fileSize = body.contentLength();
+                long fileSizeDownloaded = 0;
+
+                inputStream = body.byteStream();
+                outputStream = new FileOutputStream(createFile);
+
+                while (true) {
+                    int read = inputStream.read(fileReader);
+
+                    if (read == -1) {
+                        break;
+                    }
+                    outputStream.write(fileReader, 0, read);
+
+                    fileSizeDownloaded += read;
+//                    UtilClass.logD(TAG, "file download: " + fileSizeDownloaded + " of " + fileSize);
+                }
+                outputStream.flush();
+
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            } finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }
